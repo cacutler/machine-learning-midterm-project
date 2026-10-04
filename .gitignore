@@ -6,3 +6,5 @@ christianity_urls.txt
 README.txt
 .vscode
 .DS_Store
+work/
+*.tar

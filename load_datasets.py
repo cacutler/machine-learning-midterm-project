@@ -7,7 +7,10 @@ from sklearn import linear_model
 from sklearn import tree
 from sklearn import svm
 # PUT POLARITY DATASET PATH HERE
-POLARITY_PATH = '/Users/marcotcr/phd/datasets/multi_domain_polarity/'
+POLARITY_PATH = os.environ.get(
+    'POLARITY_PATH',
+    os.path.join(os.path.dirname(__file__), '/sorted_data')
+)
 def LoadDataset(dataset_name):
   if dataset_name.endswith('ng'):
     if dataset_name == '2ng':
@@ -28,7 +31,7 @@ def LoadDataset(dataset_name):
     return train_data, train_labels, test_data, test_labels, class_names
   if dataset_name.startswith('multi_polarity_'):
     name = dataset_name.split('_')[2]
-    return LoadMultiDomainDataset(POLARITY_PATH + name)
+    return LoadMultiDomainDataset(os.path.join(POLARITY_PATH, name))
 def LoadMultiDomainDataset(path_data, remove_bigrams=True):
   random.seed(1)
   pos = []
@@ -40,10 +43,12 @@ def LoadMultiDomainDataset(path_data, remove_bigrams=True):
     else:
       z = ' '.join([' '.join([x[0]] * int(x[1])) for x in z])
     return z
-  for line in open(os.path.join(path_data, 'negative.review')):
-    neg.append(get_words(line, remove_bigrams))
-  for line in open(os.path.join(path_data, 'positive.review')):
-    pos.append(get_words(line, remove_bigrams))
+  with open(os.path.join(path_data, 'negative.review'), encoding='latin-1') as f:
+    for line in f:
+      neg.append(get_words(line, remove_bigrams))
+  with open(os.path.join(path_data, 'positive.review'), encoding='latin-1') as f:
+    for line in f:
+      pos.append(get_words(line, remove_bigrams))
   random.shuffle(pos)
   random.shuffle(neg)
   split_pos = int(len(pos) * .8)
