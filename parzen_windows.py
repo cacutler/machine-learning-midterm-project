@@ -35,7 +35,7 @@ class ParzenWindowClassifier:
         #pr = np.array([self.kernel(z, self.sigma) for z in b])
         pr = self.kernel(b, self.sigma)
         prob = sum(pr[self.ones]) / sum(pr)
-        #print prob
+        #print (prob)
         return int(prob > .5)
     def predict_proba(self, x):
         b = sp.sparse.csr_matrix(x - self.X)

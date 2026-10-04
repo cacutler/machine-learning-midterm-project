@@ -179,16 +179,16 @@ def main():
         while mistrust1 == mistrust2:
           mistrust1 = np.random.randint(0,10)                                             
           mistrust2 = np.random.randint(0,10)
-        #print explainer, mistrust1, mistrust2
+        #print (explainer, mistrust1, mistrust2)
         right[explainer].append(int(got_right(test1, test2, mistrust1, mistrust2)))
       right['random_choice'].append(int(got_right(test1, test2, np.random.random(), np.random.random())))
-      #print [(x[0], sum(x[1])) for x in right.iteritems()]
-      #print filez
+      #print ([(x[0], sum(x[1])) for x in right.iteritems()])
+      #print (filez)
     for name in right:
       accuracy[name].append(np.mean(right[name]))
-  print 'Mean accuracy:'
+  print ('Mean accuracy:')
   for name in right:
-    print name, np.mean(accuracy[name])
+    print (name, np.mean(accuracy[name]))
 
 
 if __name__ == "__main__":
