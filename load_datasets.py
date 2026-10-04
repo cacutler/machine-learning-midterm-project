@@ -37,18 +37,24 @@ def LoadMultiDomainDataset(path_data, remove_bigrams=True):
   pos = []
   neg = []
   def get_words(line, remove_bigrams=True):
-    z = [tuple(x.split(':')) for x in re.findall('\w*?:\d', line)]
+    features = re.findall(r'(\w+):(\d+)', line)
     if remove_bigrams:
-      z = ' '.join([' '.join([x[0]] * int(x[1])) for x in z if '_' not in x[0]])
-    else:
-      z = ' '.join([' '.join([x[0]] * int(x[1])) for x in z])
-    return z
-  with open(os.path.join(path_data, 'negative.review'), encoding='latin-1') as f:
-    for line in f:
-      neg.append(get_words(line, remove_bigrams))
-  with open(os.path.join(path_data, 'positive.review'), encoding='latin-1') as f:
-    for line in f:
-      pos.append(get_words(line, remove_bigrams))
+      features = [(word, count) for word, count in features if '_' not in word]
+    features = [(word, count) for word, count in features if word.isalpha()]
+    return ' '.join(word for word, count in features for _ in range(int(count)))
+  with open(os.path.join(path_data, 'processed.review'), encoding='latin-1') as f:
+    for line_number, line in enumerate(f, start=1):
+      features, separator, label = line.partition('#label#:')
+      if not separator:
+        raise ValueError('Missing #label#: marker on line {} of processed.review'.format(line_number))
+      words = get_words(features, remove_bigrams)
+      label = label.strip()
+      if label == 'positive':
+        pos.append(words)
+      elif label == 'negative':
+        neg.append(words)
+      else:
+        raise ValueError('Unexpected label {!r} on line {} of processed.review'.format(label, line_number))
   random.shuffle(pos)
   random.shuffle(neg)
   split_pos = int(len(pos) * .8)

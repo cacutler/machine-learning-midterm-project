@@ -5,8 +5,8 @@ import numpy as np
 import scipy as sp
 import json
 import random
-import sklearn
 from sklearn import ensemble
+from sklearn.model_selection import cross_val_predict
 from sklearn import svm
 from sklearn import tree
 from sklearn import neighbors
@@ -66,7 +66,7 @@ def main():
   LIME = explainers.GeneralizedLocalExplainer(kernel, explainers.data_labels_distances_mapping_text, num_samples=15000, return_mean=True, verbose=False, return_mapped=True)
 
   parzen = parzen_windows.ParzenWindowClassifier()
-  cv_preds = sklearn.cross_validation.cross_val_predict(classifier, train_vectors, train_labels, cv=5)
+  cv_preds = cross_val_predict(classifier, train_vectors, train_labels, cv=5)
   parzen.fit(train_vectors, cv_preds)
   sigmas = {'multi_polarity_electronics': {'neighbors': 0.75, 'svm': 10.0, 'tree': 0.5,
   'logreg': 0.5, 'random_forest': 0.5, 'embforest': 0.75},
