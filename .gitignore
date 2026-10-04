@@ -1,0 +1,8 @@
+__pycache__
+atheism/
+christianity/
+atheism_urls.txt
+christianity_urls.txt
+README.txt
+.vscode
+.DS_Store
