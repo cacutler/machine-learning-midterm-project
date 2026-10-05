@@ -39,6 +39,7 @@ def main():
   parser.add_argument('--num_features', '-k', type=int, required=True, help='num features')
   parser.add_argument('--percent_untrustworthy',  '-u', type=float, required=True, help='percentage of untrustworthy features. like 0.1')
   parser.add_argument('--num_rounds', '-r', type=int, required=True, help='num rounds')
+  parser.add_argument('--seed', '-s', type=int, default=1) # Added the ability for users to send in a random seed (used Claude to generate the code).
   args = parser.parse_args()
   dataset = args.dataset
   train_data, train_labels, test_data, test_labels, class_names = LoadDataset(dataset)
@@ -86,6 +87,7 @@ def main():
 
   predictions = classifier.predict(test_vectors)
   predict_probas = classifier.predict_proba(test_vectors)[:,1]
+  np.random.seed(args.seed) # Added some logic for passing in a random seed from the user for testing random seeds (used Claude to generate the code).
   for i in range(test_vectors.shape[0]):
     print (i)
     sys.stdout.flush()
