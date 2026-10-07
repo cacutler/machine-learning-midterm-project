@@ -40,6 +40,7 @@ def main():
   parser.add_argument('--percent_untrustworthy',  '-u', type=float, required=True, help='percentage of untrustworthy features. like 0.1')
   parser.add_argument('--num_rounds', '-r', type=int, required=True, help='num rounds')
   parser.add_argument('--seed', '-s', type=int, default=1) # Added the ability for users to send in a random seed (used Claude to generate the code).
+  parser.add_argument('--n-samples', '-n', type=int, default=15000) # Added the ability for users to specify the number of samples they want to use (Claude's recommendation).
   args = parser.parse_args()
   dataset = args.dataset
   train_data, train_labels, test_data, test_labels, class_names = LoadDataset(dataset)
@@ -64,7 +65,7 @@ def main():
   
   rho = 25
   kernel = lambda d: np.sqrt(np.exp(-(d**2) / rho ** 2))
-  LIME = explainers.GeneralizedLocalExplainer(kernel, explainers.data_labels_distances_mapping_text, num_samples=15000, return_mean=True, verbose=False, return_mapped=True)
+  LIME = explainers.GeneralizedLocalExplainer(kernel, explainers.data_labels_distances_mapping_text, num_samples=args.n_samples, return_mean=True, verbose=False, return_mapped=True)
 
   parzen = parzen_windows.ParzenWindowClassifier()
   cv_preds = cross_val_predict(classifier, train_vectors, train_labels, cv=5)
